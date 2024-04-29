@@ -1,0 +1,31 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Docker@2
+  displayName: 'Docker Pull'
+  inputs:
+    command: 'pull'
+    containerRegistry: 'myContainerRegistry' # Debes definir tu registro de contenedores en Azure DevOps
+    repository: 'davidaavilar/springapp'
+    tags: '20240102.1'
+
+- task: Docker@2
+  displayName: 'Docker Build'
+  inputs:
+    command: 'build'
+    containerRegistry: 'myContainerRegistry'
+    repository: 'davidaavilar/springapp'
+    tags: 'latest'
+    Dockerfile: '**/Dockerfile' # Ajusta la ruta al Dockerfile si es necesario
+
+- task: Docker@2
+  displayName: 'Docker Push'
+  inputs:
+    command: 'push'
+    containerRegistry: 'myContainerRegistry'
+    repository: 'public.ecr.aws/f5r3r2z6/davidspringapp'
+    tags: 'latest'
